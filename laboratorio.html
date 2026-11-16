@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<title>Laboratório PHP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="assets/css/site.css?v=5">
+<link rel="stylesheet" href="assets/css/lab.css?v=5">
+</head>
+<body class="lab-body">
+
+<header class="lab-topo">
+  <a class="brand" href="index.html" title="Voltar ao início"><span class="brand-mark">&lt;?php</span><span class="nome-lab">Laboratório</span></a>
+  <select id="seletor" aria-label="Escolher projeto"></select>
+  <span id="status" class="status-php">Carregando PHP...</span>
+  <span class="espaco"></span>
+  <div class="grupo">
+    <a id="link-aula" class="btn pequeno" href="#" hidden>Ver aula</a>
+    <button id="btn-restaurar" class="btn pequeno" type="button" title="Volta os arquivos ao modelo original">Restaurar modelo</button>
+    <button id="btn-zip" class="btn pequeno" type="button" title="Baixa o projeto para rodar no XAMPP">Baixar .zip</button>
+    <button id="btn-executar" class="btn primario pequeno" type="button" title="Ctrl + Enter">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l13-7.5z"/></svg>Executar
+    </button>
+    <button class="theme-btn" type="button" aria-label="Alternar tema" onclick="R.tema.alternar()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  </div>
+</header>
+
+<main class="lab">
+  <!-- Lado esquerdo: arquivos do projeto + editor -->
+  <section class="painel painel-editor">
+    <div class="abas" id="abas"></div>
+    <!-- Aparece nos exercícios: explica o que o aluno deve fazer -->
+    <div class="faixa-exercicio" id="faixa-exercicio" hidden></div>
+    <div class="editor-wrap"><textarea id="editor"></textarea></div>
+  </section>
+
+  <!-- Lado direito: navegador simulado + console -->
+  <section class="painel painel-preview">
+    <div class="barra-endereco">
+      <button id="btn-voltar" type="button" title="Voltar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+      <button id="btn-recarregar" type="button" title="Recarregar (mesma requisição)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/></svg></button>
+      <div class="endereco"><span id="metodo" class="metodo">GET</span><span class="url" id="url">localhost/</span></div>
+    </div>
+    <div class="preview-wrap">
+      <div class="carregando" id="carregando" hidden>Processando PHP...</div>
+      <iframe id="preview" title="Resultado" sandbox="allow-scripts allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin"></iframe>
+    </div>
+    <div class="console" id="console">
+      <div class="console-abas">
+        <button type="button" class="ativa" data-aba="log">Console <span class="contador" id="cont-erros"></span></button>
+        <button type="button" data-aba="dados">Dados salvos</button>
+        <button type="button" data-aba="req">Requisição</button>
+        <span class="direita"></span>
+        <button type="button" id="btn-limpar-dados" title="Apaga arquivos criados pelo PHP e a sessão">Limpar dados</button>
+        <button type="button" id="btn-recolher" title="Recolher/expandir">Recolher</button>
+      </div>
+      <div class="console-corpo" id="console-corpo"></div>
+    </div>
+  </section>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/xml/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/css/css.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/htmlmixed/htmlmixed.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/php/php.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closetag.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/selection/active-line.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/comment/comment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+<script src="assets/js/render.js?v=5"></script>
+<script src="assets/js/aulas/aula01.js"></script>
+<script src="assets/js/aulas/aula02.js"></script>
+<script src="assets/js/aulas/aula03.js"></script>
+<script src="assets/js/aulas/aula04.js"></script>
+<script src="assets/js/aulas/aula05.js"></script>
+<script src="assets/js/aulas/aula06.js"></script>
+<script src="assets/js/aulas/aula07.js"></script>
+<script src="assets/js/aulas/aula08.js"></script>
+<script src="assets/js/aulas/aula09.js"></script>
+<script src="assets/js/aulas/aula10.js"></script>
+<script src="assets/js/ide/praticas.js?v=5"></script>
+<script src="assets/js/php-motor.js?v=5"></script>
+<script src="assets/js/lab.js?v=5"></script>
+</body>
+</html>

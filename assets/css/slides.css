@@ -1,0 +1,73 @@
+/* =========================================================
+   Slides do professor — palco 16:9 (1280 x 720) escalonado
+   ========================================================= */
+html, body { height: 100%; margin: 0; }
+body.slides-body { background: #e9e9ec; overflow: hidden; font-family: var(--font); }
+:root[data-theme="dark"] body.slides-body { background: #0d0e10; }
+
+.palco-wrap { position: fixed; inset: 0 0 48px 0; overflow: hidden; }
+.notas-abertas .palco-wrap { right: 380px; }
+.palco { width: 1280px; height: 720px; transform-origin: center center; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); }
+.slide { position: absolute; inset: 0; background: var(--surface); color: var(--text); padding: 64px 80px 70px; display: none; flex-direction: column; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,.12); border-radius: 6px; }
+.slide.ativo { display: flex; }
+.slide .s-topo { font: 600 15px var(--mono); color: var(--accent); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 12px; }
+.slide h2 { font-size: 46px; margin: 0 0 28px; letter-spacing: -0.02em; line-height: 1.1; }
+.slide .s-corpo { flex: 1; font-size: 25px; line-height: 1.5; min-height: 0; }
+.slide .s-corpo p { margin: 0 0 18px; }
+.slide .s-corpo ul, .slide .s-corpo ol { margin: 0 0 18px; padding-left: 1.2em; }
+.slide .s-corpo li { margin-bottom: 10px; }
+.slide .s-corpo h3 { font-size: 26px; margin: 0 0 12px; }
+.slide .s-corpo code { font-size: .85em; }
+.slide .codigo { margin-bottom: 18px; }
+.slide .codigo-topo { font-size: 14px; padding: 6px 14px; }
+.slide .codigo-topo button, .slide .codigo-topo a { display: none; }
+.slide pre { font-size: 19px; line-height: 1.5; padding: 16px 20px; }
+.slide .callout { padding: 16px 22px; margin-bottom: 18px; }
+.slide .callout .rotulo { font-size: 13px; }
+.slide .compara { gap: 20px; }
+.slide .compara .titulo-col { font-size: 14px; }
+.slide .fluxo .passo { font-size: 18px; padding: 16px 18px; }
+.slide .fluxo .passo b { font-size: 20px; }
+.slide .tabela-wrap { font-size: 20px; }
+.slide table { font-size: 20px; }
+.slide .passos > li { padding-left: 50px; }
+.slide .passos > li::before { width: 34px; height: 34px; font-size: 16px; }
+.slide .s-rodape { position: absolute; left: 80px; right: 80px; bottom: 26px; display: flex; justify-content: space-between; font: 500 14px var(--mono); color: var(--text-3); }
+
+/* Capa */
+.slide.capa { justify-content: center; background: var(--accent); color: #fff; }
+.slide.capa .s-topo { color: rgba(255,255,255,.75); font-size: 18px; }
+.slide.capa h2 { font-size: 68px; color: #fff; max-width: 1000px; }
+.slide.capa .s-corpo { flex: 0; color: rgba(255,255,255,.88); font-size: 28px; max-width: 900px; }
+.slide.capa .s-rodape { color: rgba(255,255,255,.6); }
+.slide.capa .marca { position: absolute; top: 60px; left: 80px; font: 700 18px var(--mono); background: rgba(255,255,255,.15); padding: 8px 12px; border-radius: 8px; }
+:root[data-theme="dark"] .slide.capa { background: #2a3058; }
+
+/* Barra inferior */
+.controles { position: fixed; left: 0; right: 0; bottom: 0; height: 48px; display: flex; align-items: center; gap: 8px; padding: 0 14px; background: var(--surface); border-top: 1px solid var(--border); font-size: 14px; color: var(--text-2); }
+.controles .contador { font: 600 13px var(--mono); min-width: 64px; text-align: center; }
+.controles .titulo-deck { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.controles select { font: 500 13px var(--font); padding: 5px 8px; border: 1px solid var(--border); border-radius: 7px; background: var(--bg); color: var(--text); }
+.controles .espaco { flex: 1; }
+.progresso { position: fixed; left: 0; bottom: 48px; height: 3px; background: var(--accent); transition: width .2s; }
+
+/* Notas do apresentador */
+.notas { position: fixed; top: 0; right: 0; bottom: 48px; width: 380px; background: var(--surface); border-left: 1px solid var(--border); padding: 20px 22px; overflow: auto; display: none; font-size: 15px; line-height: 1.6; color: var(--text); }
+.notas-abertas .notas { display: block; }
+.notas h4 { font: 600 12px var(--mono); text-transform: uppercase; letter-spacing: .08em; color: var(--accent); margin: 0 0 10px; }
+.notas .proximo { margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--border); color: var(--text-2); font-size: 13px; }
+.atalhos { font-size: 12px; color: var(--text-3); margin-top: 20px; line-height: 1.8; }
+kbd { font: 600 11px var(--mono); border: 1px solid var(--border); border-bottom-width: 2px; border-radius: 4px; padding: 1px 5px; background: var(--surface-2); }
+
+/* Impressão: um slide por página */
+@page { size: 1280px 720px; margin: 0; }
+@media print {
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body.slides-body { overflow: visible; background: #fff; }
+  .controles, .notas, .progresso { display: none !important; }
+  .palco-wrap { position: static; display: block; }
+  .palco-wrap { overflow: visible; }
+  .palco { transform: none !important; position: static; width: 1280px; height: auto; }
+  .slide { display: flex !important; position: relative; width: 1280px; height: 720px; break-after: page; box-shadow: none; border-radius: 0; }
+  .slide.capa { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}

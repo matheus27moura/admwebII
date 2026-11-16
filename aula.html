@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<title>Aula — PHP na Prática</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+<div id="topo"></div>
+<div class="aula-layout">
+  <aside class="toc" id="toc"></aside>
+  <main class="artigo" id="artigo"></main>
+</div>
+<div id="rodape"></div>
+
+<script src="assets/js/render.js"></script>
+<script src="assets/js/aulas/aula01.js"></script>
+<script src="assets/js/aulas/aula02.js"></script>
+<script src="assets/js/aulas/aula03.js"></script>
+<script src="assets/js/aulas/aula04.js"></script>
+<script src="assets/js/aulas/aula05.js"></script>
+<script src="assets/js/aulas/aula06.js"></script>
+<script src="assets/js/aulas/aula07.js"></script>
+<script src="assets/js/aulas/aula08.js"></script>
+<script src="assets/js/aulas/aula09.js"></script>
+<script src="assets/js/aulas/aula10.js"></script>
+<script>
+  // PDFs do projeto (pasta pdfs-projeto/), um por etapa
+  const PDFS_PROJETO = ['etapa-01-a-loja-ganha-vida.pdf', 'etapa-02-saudacao-e-horarios.pdf', 'etapa-03-catalogo-com-arrays.pdf',
+    'etapa-04-busca-e-formularios.pdf', 'etapa-05-validacao-e-seguranca.pdf', 'etapa-06-salvando-em-json.pdf', 'etapa-07-area-restrita.pdf',
+    'etapa-08-apis-cep-e-clima.pdf', 'etapa-09-agenda-sem-conflitos.pdf', 'etapa-10-whatsapp-chatbot-e-apresentacao.pdf'];
+  // Monta a página da aula a partir dos dados em assets/js/aulas/
+  R.ordenar();
+  const n = Number(new URLSearchParams(location.search).get('n')) || 1;
+  const a = R.aula(n) || AULAS[0];
+  document.getElementById('topo').innerHTML = R.cabecalho('aulas');
+  document.getElementById('rodape').innerHTML = R.rodape();
+  document.title = 'Aula ' + R.pad(a.n) + ' — ' + a.titulo;
+
+  const secoes = [];
+  let h = '<header class="aula-cabecalho"><div class="eyebrow">Aula ' + R.pad(a.n) + ' de 10</div>' +
+    '<h1>' + a.titulo + '</h1><p class="lead">' + a.resumo + '</p>' +
+    '<div class="meta"><span><b>Duração:</b> 2 horas</span><span><b>Projeto:</b> ' + a.modelo.nome + '</span>' +
+    '<span><a href="laboratorio.html?projeto=exercicio' + R.pad(a.n) + '">Exercício no laboratório</a></span></div></header>';
+
+  secoes.push(['objetivos', 'Objetivos']);
+  h += '<h2 id="objetivos">Objetivos da aula</h2><ul class="objetivos">' + a.objetivos.map(o => '<li>' + o + '</li>').join('') + '</ul>';
+
+  secoes.push(['roteiro', 'Roteiro da aula']);
+  h += '<h2 id="roteiro">Roteiro das 2 horas</h2>' + R.bloco({ tabela: { classe: 'cronograma', cab: ['Tempo', 'Atividade'], linhas: a.cronograma } });
+
+  a.secoes.forEach((s, i) => {
+    const id = 's' + (i + 1);
+    secoes.push([id, s.titulo]);
+    h += '<h2 id="' + id + '">' + s.titulo + '</h2>' + R.blocos(s.blocos);
+  });
+
+  secoes.push(['modelo', 'Projeto da aula']);
+  h += '<h2 id="modelo">Projeto da aula: ' + a.modelo.nome + '</h2>' +
+    '<div class="modelo-box"><div><h3>' + a.modelo.nome + '</h3><p>' + a.modelo.descricao + '</p>' +
+    '<div class="arquivos">' + Object.keys(a.modelo.arquivos).map(f => '<span class="tag">' + f + '</span>').join('') + '</div></div>' +
+    '<div style="display:flex;flex-direction:column;gap:8px"><a class="btn primario" href="laboratorio.html?projeto=exercicio' + R.pad(a.n) + '">Fazer o exercício (escrever o PHP)</a>' +
+    '<a class="btn" href="laboratorio.html?projeto=aula' + R.pad(a.n) + '">Ver modelo resolvido</a></div></div>' +
+    R.blocos(a.modeloTexto || []);
+
+  // Prática na IDE e etapa do projeto da disciplina
+  secoes.push(['praticar', 'Praticar na IDE']);
+  h += '<h2 id="praticar">Praticar na IDE</h2>' +
+    '<div class="grid-2" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px">' +
+    '<a class="card" href="ide.html?trilha=pratica&n=' + a.n + '" style="color:inherit"><h3>Prática da aula ' + R.pad(a.n) + '</h3><p>O modelo "' + a.modelo.nome + '" com HTML, CSS e JS prontos e o PHP para você escrever. Os requisitos são verificados automaticamente.</p></a>' +
+    '<a class="card" href="ide.html?trilha=projeto&n=' + a.n + '" style="color:inherit"><h3>Projeto da disciplina: etapa ' + a.n + '</h3><p>Aplique o conteúdo desta aula no site do pet shop "Patas &amp; Cia". Na etapa 10, todo o PHP do site estará pronto.</p></a>' +
+    '<a class="card" href="pdfs-projeto/' + PDFS_PROJETO[a.n - 1] + '" download style="color:inherit"><h3>Roteiro da etapa ' + a.n + ' em PDF</h3><p>O mesmo roteiro para acompanhar impresso ou no celular, com checklist para mostrar ao professor.</p></a>' +
+    '</div>';
+
+  secoes.push(['desafios', 'Desafios']);
+  h += '<h2 id="desafios">Desafios</h2><p class="muted">Faça no laboratório, a partir do projeto da aula. Comece pelo básico e avance no seu ritmo.</p>' +
+    a.desafios.map((d, i) => {
+      const cls = { 'Básico': 'basico', 'Intermediário': 'intermediario', 'Avançado': 'avancado' }[d.nivel] || 'basico';
+      return '<div class="desafio"><div class="desafio-topo"><span class="nivel ' + cls + '">' + d.nivel + '</span><h3>' + (i + 1) + '. ' + d.titulo + '</h3></div>' +
+        R.paragrafos(d.texto) + (d.dica ? '<details class="dica-desafio"><summary>Ver dica</summary><div>' + d.dica + '</div></details>' : '') + '</div>';
+    }).join('');
+
+  secoes.push(['revisao', 'Revisão']);
+  h += '<h2 id="revisao">Para revisar</h2><ul>' + a.revisao.map(r => '<li>' + r + '</li>').join('') + '</ul>';
+
+  const ant = R.aula(a.n - 1), prox = R.aula(a.n + 1);
+  h += '<nav class="navegacao-aulas">' +
+    (ant ? '<a href="aula.html?n=' + ant.n + '"><small>Aula anterior</small>' + ant.titulo + '</a>' : '<span></span>') +
+    (prox ? '<a class="prox" href="aula.html?n=' + prox.n + '"><small>Próxima aula</small>' + prox.titulo + '</a>' : '<span></span>') + '</nav>';
+
+  document.getElementById('artigo').innerHTML = h;
+  document.getElementById('toc').innerHTML = '<div class="toc-titulo">Nesta aula</div>' +
+    secoes.map(s => '<a href="#' + s[0] + '">' + s[1] + '</a>').join('') +
+    '<div class="toc-aulas"><div class="toc-titulo">Todas as aulas</div>' +
+    AULAS.map(x => '<a href="aula.html?n=' + x.n + '"' + (x.n === a.n ? ' class="ativo"' : '') + '>' + R.pad(x.n) + '. ' + x.curto + '</a>').join('') + '</div>';
+  R.ativarCodigos(document);
+
+  // destaca a seção visível no sumário
+  const links = [...document.querySelectorAll('#toc > a')];
+  const obs = new IntersectionObserver((ents) => ents.forEach(e => {
+    if (e.isIntersecting) links.forEach(l => l.classList.toggle('ativo', l.getAttribute('href') === '#' + e.target.id));
+  }), { rootMargin: '-80px 0px -70% 0px' });
+  document.querySelectorAll('.artigo h2[id]').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

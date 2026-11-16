@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<title>IDE PHP — Projeto e práticas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="assets/css/site.css?v=5">
+<link rel="stylesheet" href="assets/css/lab.css?v=5">
+<link rel="stylesheet" href="assets/css/ide.css?v=5">
+</head>
+<body class="ide-body">
+
+<header class="lab-topo ide-topo">
+  <a class="brand" href="index.html" title="Voltar ao início"><span class="brand-mark">&lt;?php</span><span class="nome-lab">IDE</span></a>
+  <div class="trilhas" role="tablist">
+    <button type="button" data-trilha="projeto" role="tab">Projeto da disciplina</button>
+    <button type="button" data-trilha="pratica" role="tab">Prática das aulas</button>
+  </div>
+  <span id="status" class="status-php">Carregando PHP...</span>
+  <span class="espaco"></span>
+  <div class="grupo">
+    <span id="selo-prof" class="selo-prof" hidden>Modo professor</span>
+    <button id="btn-prof" class="btn pequeno" type="button" title="Liberar recursos do professor">Professor</button>
+    <button id="btn-executar" class="btn primario pequeno" type="button" title="Ctrl + Enter">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l13-7.5z"/></svg>Executar
+    </button>
+    <button class="theme-btn" type="button" aria-label="Alternar tema" onclick="R.tema.alternar()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  </div>
+</header>
+
+<nav class="ide-etapas" id="etapas" aria-label="Etapas"></nav>
+
+<main class="ide">
+  <!-- Roteiro da etapa (não dá para selecionar/copiar) -->
+  <aside class="ide-guia" id="guia"></aside>
+
+  <div class="ide-trabalho">
+    <section class="painel painel-editor">
+      <div class="abas" id="abas"></div>
+      <div class="aviso-travado" id="aviso-travado" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+        Arquivo pronto (somente leitura). O seu trabalho é o PHP.
+      </div>
+      <div class="editor-wrap"><textarea id="editor"></textarea></div>
+    </section>
+
+    <section class="painel painel-preview">
+      <div class="barra-endereco">
+        <button id="btn-voltar" type="button" title="Voltar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <button id="btn-recarregar" type="button" title="Recarregar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/></svg></button>
+        <div class="endereco"><span id="metodo" class="metodo">GET</span><span class="url" id="url">localhost/</span></div>
+      </div>
+      <div class="preview-wrap">
+        <div class="carregando" id="carregando" hidden>Processando PHP...</div>
+        <iframe id="preview" title="Resultado" sandbox="allow-scripts allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin"></iframe>
+      </div>
+      <div class="console" id="console">
+        <div class="console-abas">
+          <button type="button" class="ativa" data-aba="log">Console <span class="contador" id="cont-erros"></span></button>
+          <button type="button" data-aba="dados">Dados salvos</button>
+          <span class="direita"></span>
+          <button type="button" id="btn-limpar-dados" title="Apaga arquivos criados pelo PHP e a sessão">Limpar dados</button>
+          <button type="button" id="btn-recolher">Recolher</button>
+        </div>
+        <div class="console-corpo" id="console-corpo"></div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<div class="toast" id="toast" hidden></div>
+<input type="file" id="arquivo-backup" accept=".json,application/json" hidden>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/xml/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/css/css.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/htmlmixed/htmlmixed.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/php/php.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closetag.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/selection/active-line.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/comment/comment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+<script src="assets/js/render.js?v=5"></script>
+<script src="assets/js/aulas/aula01.js"></script>
+<script src="assets/js/aulas/aula02.js"></script>
+<script src="assets/js/aulas/aula03.js"></script>
+<script src="assets/js/aulas/aula04.js"></script>
+<script src="assets/js/aulas/aula05.js"></script>
+<script src="assets/js/aulas/aula06.js"></script>
+<script src="assets/js/aulas/aula07.js"></script>
+<script src="assets/js/aulas/aula08.js"></script>
+<script src="assets/js/aulas/aula09.js"></script>
+<script src="assets/js/aulas/aula10.js"></script>
+<script src="assets/js/ide/config.js?v=5"></script>
+<script src="assets/js/ide/projeto-site.js?v=5"></script>
+<script src="assets/js/ide/projeto-etapas.js?v=5"></script>
+<script src="assets/js/ide/praticas.js?v=5"></script>
+<script src="assets/js/php-motor.js?v=5"></script>
+<script src="assets/js/ide.js?v=5"></script>
+</body>
+</html>
